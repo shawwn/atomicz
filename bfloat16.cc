@@ -2115,7 +2115,7 @@ namespace greenwaves
 		RegisterNumpyBfloat16();
 		Py_INCREF(&bfloat16_type);
 		Py_XINCREF(&NPyBfloat16_Descr);
-		if (PyModule_AddObject(m, "bfloat16", (PyObject *)&bfloat16_type) < 0)
+		if (PyModule_AddObject(m, "bfloat16", Bfloat16Dtype()) < 0)
 		{
 			Py_DECREF(&bfloat16_type);
 			Py_DECREF(m);
