@@ -5,7 +5,7 @@ from distutils.command.build_ext import build_ext
 from distutils.core import Extension, setup
 from distutils.sysconfig import customize_compiler
 
-PACKAGE_NAME='bfloat16'
+PACKAGE_NAME='bfloat16ext'
 
 import numpy as np
 
@@ -30,7 +30,8 @@ class my_build_ext(build_ext):
 
 module1 = Extension(PACKAGE_NAME,
                     sources=['bfloat16.cc'],
-                    include_dirs=[np.get_include()])
+                    include_dirs=[np.get_include()],
+                    extra_compile_args=['-std=c++14'])
 
 setup(name=PACKAGE_NAME,
       version='1.1',
@@ -38,8 +39,7 @@ setup(name=PACKAGE_NAME,
       license='Apache',
       author='GreenWaves Technologies',
       author_email='support@greenwaves-technologies.com',
-      url='https://github.com/GreenWaves-Technologies/bfloat16',
-      download_url = 'https://github.com/GreenWaves-Technologies/bfloat16/archive/refs/tags/1.0.tar.gz',
+      url='https://github.com/shawwn/bfloat16ext',
       install_requires=[],
       ext_modules=[module1],
       cmdclass={'build_ext': my_build_ext})
