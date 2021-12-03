@@ -34,7 +34,41 @@ limitations under the License.
 #include <fenv.h>
 #include "numpy/arrayobject.h"
 #include "numpy/ufuncobject.h"
-#include "str_cat.h"
+
+
+//#include "str_cat.h"
+// Punt for now by just inlining this header.
+// See https://stackoverflow.com/questions/6633624/how-to-specify-header-files-in-setup-py-script-for-python-extension-module
+
+static const int kSixDigitsToBufferSize = 16;
+
+// Helper function for fast formatting of floating-point values.
+// The result is the same as printf's "%g", a.k.a. "%.6g"; that is, six
+// significant digits are returned, trailing zeros are removed, and numbers
+// outside the range 0.0001-999999 are output using scientific notation
+// (1.23456e+06). This routine is heavily optimized.
+// Required buffer size is `kSixDigitsToBufferSize`.
+size_t SixDigitsToBuffer(double d, char* buffer);
+// AlphaNumBuffer allows a way to pass a string to StrCat without having to do
+// memory allocation.  It is simply a pair of a fixed-size character array, and
+// a size.  Please don't use outside of absl, yet.
+template <size_t max_size>
+struct AlphaNumBuffer {
+  std::array<char, max_size> data;
+  size_t size;
+};
+
+// Helper function for the future StrCat default floating-point format, %.6g
+// This is fast.
+inline AlphaNumBuffer<
+    kSixDigitsToBufferSize>
+SixDigits(double d) {
+  AlphaNumBuffer<kSixDigitsToBufferSize>
+      result;
+  result.size = SixDigitsToBuffer(d, &result.data[0]);
+  return result;
+}
+
 
 namespace greenwaves
 {
