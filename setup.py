@@ -30,11 +30,11 @@ class my_build_ext(build_ext):
 
 module1 = Extension(PACKAGE_NAME,
                     sources=['bfloat16.cc', 'numbers.cc'],
-                    include_dirs=[np.get_include()],
+                    include_dirs=[np.get_include(), os.path.dirname(__file__)],
                     extra_compile_args=['-std=c++14'])
 
 setup(name=PACKAGE_NAME,
-      version='1.1.3',
+      version='1.1.4',
       description='Numpy bfloat16 package',
       license='Apache',
       author='GreenWaves Technologies',
