@@ -11,7 +11,7 @@
 #define ABSL_NUMERIC_INTERNAL_HAVE_BUILTIN_OR_GCC(x) 0
 #define ABSL_HAVE_BUILTIN(x) 0
 
-#include "numbers.h"
+// #include "numbers.h"
 
 // extern const char
 //     two_ASCII_digits[100][2];  // 00, 01, 02, 03...
