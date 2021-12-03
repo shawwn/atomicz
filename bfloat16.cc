@@ -34,6 +34,7 @@ limitations under the License.
 #include <fenv.h>
 #include "numpy/arrayobject.h"
 #include "numpy/ufuncobject.h"
+#include "str_cat.h"
 
 namespace greenwaves
 {
@@ -253,7 +254,9 @@ namespace greenwaves
 		PyObject *PyBfloat16_Repr(PyObject *self)
 		{
 			bfloat16 x = reinterpret_cast<PyBfloat16 *>(self)->value;
-			std::string v = std::to_string(static_cast<float>(x));
+			//std::string v = std::to_string(static_cast<float>(x));
+      auto result = SixDigits(static_cast<double>(x));
+      std::string v(&result.data[0], result.size);
 			return PyUnicode_FromString(v.c_str());
 		}
 
