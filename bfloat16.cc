@@ -2061,7 +2061,7 @@ namespace greenwaves
 	};
 
 	PyMODINIT_FUNC
-	PyInit_bfloat16(void)
+	PyInit_bfloat16ext(void)
 	{
 		PyObject *m;
 		m = PyModule_Create(&Bfloat16Module);
