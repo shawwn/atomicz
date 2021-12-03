@@ -6,6 +6,7 @@
 #include <string>
 #include <type_traits>
 #include <cmath>
+#include <cassert>
 
 #define ABSL_FALLTHROUGH_INTENDED
 #define ABSL_NUMERIC_INTERNAL_HAVE_BUILTIN_OR_GCC(x) 0
