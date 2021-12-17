@@ -7,8 +7,6 @@ from distutils.sysconfig import customize_compiler
 
 PACKAGE_NAME='atomicz'
 
-import numpy as np
-
 if 'clean' in sys.argv:
     curdir = os.path.dirname(os.path.realpath(__file__))
     for filepath in ['build', 'dist', f'{PACKAGE_NAME}.egg-info', 'MANIFEST']:
@@ -30,11 +28,11 @@ class my_build_ext(build_ext):
 
 module1 = Extension(PACKAGE_NAME,
                     sources=['atomicz.cc'],
-                    include_dirs=[np.get_include()],
+                    include_dirs=[],
                     extra_compile_args=['-std=c++14'])
 
 setup(name=PACKAGE_NAME,
-      version='0.2.0',
+      version='0.2.1',
       description='atomic operations on raw memory for python',
       license='Apache',
       author='Shawn Presser',
