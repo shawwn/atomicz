@@ -188,7 +188,7 @@ namespace greenwaves
 		PyObject *obj_source;
 		PyObject *obj_sink;
 		do {
-      if (!PyArg_ParseTuple(args, "OO", &obj_source, &obj_sink)) {
+      if (!PyArg_ParseTuple(args, "OO", &obj_sink, &obj_source)) {
         except = 1; break;
       }
       /* both objects should support the buffer interface */
@@ -305,7 +305,7 @@ namespace greenwaves
 		PyObject *obj_source;
 		PyObject *obj_sink;
 		do {
-      if (!PyArg_ParseTuple(args, "OO", &obj_source, &obj_sink)) {
+      if (!PyArg_ParseTuple(args, "OO", &obj_sink, &obj_source)) {
         except = 1; break;
       }
       /* both objects should support the buffer interface */

@@ -34,7 +34,7 @@ module1 = Extension(PACKAGE_NAME,
                     extra_compile_args=['-std=c++14'])
 
 setup(name=PACKAGE_NAME,
-      version='0.1.0',
+      version='0.2.0',
       description='atomic operations on raw memory for python',
       license='Apache',
       author='Shawn Presser',
