@@ -29,7 +29,7 @@ class my_build_ext(build_ext):
 
 
 module1 = Extension(PACKAGE_NAME,
-                    sources=['atomicz.cc', 'numbers.cc'],
+                    sources=['atomicz.cc'],
                     include_dirs=[np.get_include()],
                     extra_compile_args=['-std=c++14'])
 

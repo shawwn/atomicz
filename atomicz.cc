@@ -46,19 +46,19 @@ namespace greenwaves
 	static PyObject *AtomiczError;
 
   template<typename T>
-  T load(const void* ptr, std::memory_order order = std::memory_order_seq_cst) _NOEXCEPT
+  T load(const void* ptr, std::memory_order order = std::memory_order_seq_cst)
   {
     return static_cast<const std::atomic<T>*>(ptr)->load(order);
   }
 
   template<typename T>
-  void store(void* ptr, const T val, std::memory_order order = std::memory_order_seq_cst) _NOEXCEPT
+  void store(void* ptr, const T val, std::memory_order order = std::memory_order_seq_cst)
   {
     static_cast<std::atomic<T>*>(ptr)->store(val, order);
   }
 
   template<typename T>
-  T exchange(void* ptr, const T val, std::memory_order order = std::memory_order_seq_cst) _NOEXCEPT
+  T exchange(void* ptr, const T val, std::memory_order order = std::memory_order_seq_cst)
   {
     return static_cast<std::atomic<T>*>(ptr)->exchange(val, order);
   }
