@@ -32,12 +32,11 @@ module1 = Extension(PACKAGE_NAME,
                     extra_compile_args=['-std=c++14'])
 
 setup(name=PACKAGE_NAME,
-      version='0.2.1',
+      version='0.2.2',
       description='atomic operations on raw memory for python',
       license='Apache',
       author='Shawn Presser',
       author_email='shawnpresser@gmail.com',
       url='https://github.com/shawwn/atomicz',
-      install_requires=[],
       ext_modules=[module1],
       cmdclass={'build_ext': my_build_ext})
