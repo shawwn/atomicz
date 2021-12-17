@@ -108,49 +108,49 @@ namespace greenwaves
 
 		// Registered numpy type ID. Global variable populated by the registration code.
 		// Protected by the GIL.
-		int npy_bfloat16 = NPY_NOTYPE;
+		int npy_atomicz = NPY_NOTYPE;
 
 		// Forward declaration.
-		extern PyTypeObject bfloat16_type;
-		extern PyArray_Descr NPyBfloat16_Descr;
+		extern PyTypeObject atomicz_type;
+		extern PyArray_Descr NPyAtomicz_Descr;
 
 		// Pointer to the bfloat16 type object we are using. This is either a pointer
-		// to bfloat16_type, if we choose to register it, or to the bfloat16 type
+		// to atomicz_type, if we choose to register it, or to the bfloat16 type
 		// registered by another system into NumPy.
-		PyTypeObject *bfloat16_type_ptr = nullptr;
+		PyTypeObject *atomicz_type_ptr = nullptr;
 
 		// Representation of a Python bfloat16 object.
-		struct PyBfloat16
+		struct PyAtomicz
 		{
 			PyObject_HEAD; // Python object header
 			bfloat16 value;
 		};
 
-		// Returns true if 'object' is a PyBfloat16.
-		bool PyBfloat16_Check(PyObject *object)
+		// Returns true if 'object' is a PyAtomicz.
+		bool PyAtomicz_Check(PyObject *object)
 		{
-			return PyObject_IsInstance(object, reinterpret_cast<PyObject *>(&bfloat16_type));
+			return PyObject_IsInstance(object, reinterpret_cast<PyObject *>(&atomicz_type));
 		}
 
-		// Extracts the value of a PyBfloat16 object.
-		bfloat16 PyBfloat16_Bfloat16(PyObject *object)
+		// Extracts the value of a PyAtomicz object.
+		bfloat16 PyAtomicz_Atomicz(PyObject *object)
 		{
-			return reinterpret_cast<PyBfloat16 *>(object)->value;
+			return reinterpret_cast<PyAtomicz *>(object)->value;
 		}
 
-		// Constructs a PyBfloat16 object from a bfloat16.
-		PyObject *PyBfloat16_FromBfloat16(bfloat16 x)
+		// Constructs a PyAtomicz object from a bfloat16.
+		PyObject *PyAtomicz_FromAtomicz(bfloat16 x)
 		{
-			return PyArray_Scalar(&x, &NPyBfloat16_Descr, NULL);
+			return PyArray_Scalar(&x, &NPyAtomicz_Descr, NULL);
 		}
 
 		// Converts a Python object to a bfloat16 value. Returns true on success,
 		// returns false and reports a Python error on failure.
-		bool CastToBfloat16(PyObject *arg, bfloat16 *output)
+		bool CastToAtomicz(PyObject *arg, bfloat16 *output)
 		{
-			if (PyBfloat16_Check(arg))
+			if (PyAtomicz_Check(arg))
 			{
-				*output = PyBfloat16_Bfloat16(arg);
+				*output = PyAtomicz_Atomicz(arg);
 				return true;
 			}
 			if (PyFloat_Check(arg))
@@ -200,9 +200,9 @@ namespace greenwaves
 			{
 				Safe_PyObjectPtr ref;
 				PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(arg);
-				if (PyArray_TYPE(arr) != npy_bfloat16)
+				if (PyArray_TYPE(arr) != npy_atomicz)
 				{
-					ref = make_safe(PyArray_Cast(arr, npy_bfloat16));
+					ref = make_safe(PyArray_Cast(arr, npy_atomicz));
 					if (PyErr_Occurred())
 					{
 						return false;
@@ -216,8 +216,8 @@ namespace greenwaves
 			return false;
 		}
 
-		// Constructs a new PyBfloat16.
-		PyObject *PyBfloat16_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
+		// Constructs a new PyAtomicz.
+		PyObject *PyAtomicz_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 		{
 			if (kwds && PyDict_Size(kwds))
 			{
@@ -228,27 +228,27 @@ namespace greenwaves
 			if (size != 1)
 			{
 				PyErr_SetString(PyExc_TypeError,
-								"expected number as argument to bfloat16 constructor");
+								"expected number as argument to atomicz constructor");
 				return nullptr;
 			}
 			PyObject *arg = PyTuple_GetItem(args, 0);
 
 			bfloat16 value;
-			if (PyBfloat16_Check(arg))
+			if (PyAtomicz_Check(arg))
 			{
 				Py_INCREF(arg);
 				return arg;
 			}
-			else if (CastToBfloat16(arg, &value))
+			else if (CastToAtomicz(arg, &value))
 			{
-				return PyBfloat16_FromBfloat16(value);
+				return PyAtomicz_FromAtomicz(value);
 			}
 			else if (PyArray_Check(arg))
 			{
 				PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(arg);
-				if (PyArray_TYPE(arr) != npy_bfloat16)
+				if (PyArray_TYPE(arr) != npy_atomicz)
 				{
-					return PyArray_Cast(arr, npy_bfloat16);
+					return PyArray_Cast(arr, npy_atomicz);
 				}
 				else
 				{
@@ -261,8 +261,8 @@ namespace greenwaves
 			return nullptr;
 		}
 
-		// Comparisons on PyBfloat16s.
-		PyObject *PyBfloat16_RichCompare(PyObject *self, PyObject *other, int cmp_op)
+		// Comparisons on PyAtomiczs.
+		PyObject *PyAtomicz_RichCompare(PyObject *self, PyObject *other, int cmp_op)
 		{
 			PyObject *arr, *ret;
 
@@ -271,7 +271,7 @@ namespace greenwaves
 			{
 				return NULL;
 			}
-			if (PyBfloat16_Check(other))
+			if (PyAtomicz_Check(other))
 			{
 				PyObject *arr_other;
 				arr_other = PyArray_FromScalar(other, NULL);
@@ -284,46 +284,46 @@ namespace greenwaves
 			return ret;
 		}
 
-		// Implementation of repr() for PyBfloat16.
-		PyObject *PyBfloat16_Repr(PyObject *self)
+		// Implementation of repr() for PyAtomicz.
+		PyObject *PyAtomicz_Repr(PyObject *self)
 		{
-			bfloat16 x = reinterpret_cast<PyBfloat16 *>(self)->value;
+			bfloat16 x = reinterpret_cast<PyAtomicz *>(self)->value;
 			//std::string v = std::to_string(static_cast<float>(x));
       auto result = SixDigits(static_cast<double>(x));
       std::string v(&result.data[0], result.size);
 			return PyUnicode_FromString(v.c_str());
 		}
 
-		// Implementation of str() for PyBfloat16.
-		PyObject *PyBfloat16_Str(PyObject *self)
+		// Implementation of str() for PyAtomicz.
+		PyObject *PyAtomicz_Str(PyObject *self)
 		{
-			bfloat16 x = reinterpret_cast<PyBfloat16 *>(self)->value;
+			bfloat16 x = reinterpret_cast<PyAtomicz *>(self)->value;
 			std::string v = std::to_string(static_cast<float>(x));
 			return PyUnicode_FromString(v.c_str());
 		}
 
-		// Hash function for PyBfloat16. We use the identity function, which is a weak
+		// Hash function for PyAtomicz. We use the identity function, which is a weak
 		// hash function.
-		Py_hash_t PyBfloat16_Hash(PyObject *self)
+		Py_hash_t PyAtomicz_Hash(PyObject *self)
 		{
-			bfloat16 x = reinterpret_cast<PyBfloat16 *>(self)->value;
+			bfloat16 x = reinterpret_cast<PyAtomicz *>(self)->value;
 			return x.value;
 		}
 
-		// Converts a PyBfloat16 into a PyFloat.
-		PyObject* PyBfloat16_Float(PyObject* self) {
-			bfloat16 x = PyBfloat16_Bfloat16(self);
+		// Converts a PyAtomicz into a PyFloat.
+		PyObject* PyAtomicz_Float(PyObject* self) {
+			bfloat16 x = PyAtomicz_Atomicz(self);
 			return PyFloat_FromDouble(static_cast<double>(x));
 		}
 
-		// Converts a PyBfloat16 into a PyInt.
-		PyObject* PyBfloat16_Int(PyObject* self) {
-			bfloat16 x = PyBfloat16_Bfloat16(self);
+		// Converts a PyAtomicz into a PyInt.
+		PyObject* PyAtomicz_Int(PyObject* self) {
+			bfloat16 x = PyAtomicz_Atomicz(self);
 			long y = static_cast<long>(x);  // NOLINT
 			return PyLong_FromLong(y);
 		}
 
-		PyNumberMethods PyBfloat16_AsNumber = {
+		PyNumberMethods PyAtomicz_AsNumber = {
 			nullptr,     	  	// nb_add
 			nullptr,  			// nb_subtract
 			nullptr,  			// nb_multiply
@@ -340,9 +340,9 @@ namespace greenwaves
 			nullptr,              // nb_and
 			nullptr,              // nb_xor
 			nullptr,              // nb_or
-			PyBfloat16_Int,       // nb_int
+			PyAtomicz_Int,       // nb_int
 			nullptr,              // reserved
-			PyBfloat16_Float,     // nb_float
+			PyAtomicz_Float,     // nb_float
 
 			nullptr,  // nb_inplace_add
 			nullptr,  // nb_inplace_subtract
@@ -363,9 +363,9 @@ namespace greenwaves
 		};
 
 		// format bfloat16. Convert to a float and call format on that
-		PyObject *PyBfloat16_Format(PyObject *self, PyObject *format)
+		PyObject *PyAtomicz_Format(PyObject *self, PyObject *format)
 		{
-			bfloat16 x = reinterpret_cast<PyBfloat16 *>(self)->value;
+			bfloat16 x = reinterpret_cast<PyAtomicz *>(self)->value;
 			PyObject * f_obj = PyFloat_FromDouble(static_cast<double>(x));
 			PyObject * __format__str = PyUnicode_FromString("__format__");
 			PyObject * f_str = PyObject_CallMethodObjArgs(f_obj, __format__str, format, NULL);
@@ -374,22 +374,22 @@ namespace greenwaves
 			return f_str;
 		}
 
-		static PyMethodDef PyBfloat16_methods[] = {
+		static PyMethodDef PyAtomicz_methods[] = {
 			{
 				"__format__",
-				(PyCFunction) PyBfloat16_Format,
+				(PyCFunction) PyAtomicz_Format,
 				METH_O,
-				"__format__ method for bfloat16"
+				"__format__ method for atomicz"
 			},
 			{NULL}  /* Sentinel */
 		};
 
 
 #ifdef IMPLEMENT_BUFFER
-		int PyBfloat16_getbuffer(PyObject *exporter, Py_buffer *view, int flags) {
+		int PyAtomicz_getbuffer(PyObject *exporter, Py_buffer *view, int flags) {
 			view->obj = exporter;
 			Py_INCREF(exporter);
-			view->buf = &(reinterpret_cast<PyBfloat16 *>(exporter)->value);
+			view->buf = &(reinterpret_cast<PyAtomicz *>(exporter)->value);
 			view->len = 1;
 			view->itemsize = sizeof(bfloat16);
 			view->readonly = 0;
@@ -408,17 +408,17 @@ namespace greenwaves
 			return 0;
 		}
 
-		static PyBufferProcs PyBfloat16_buffer_procs = {
-			&PyBfloat16_getbuffer,
+		static PyBufferProcs PyAtomicz_buffer_procs = {
+			&PyAtomicz_getbuffer,
 			NULL
 		};
 #endif
 
-		// Python type for PyBfloat16 objects.
+		// Python type for PyAtomicz objects.
 
-		PyTypeObject bfloat16_type = {
-			PyVarObject_HEAD_INIT(nullptr, 0) "bfloat16", // tp_name
-			sizeof(PyBfloat16),							  // tp_basicsize
+		PyTypeObject atomicz_type = {
+			PyVarObject_HEAD_INIT(nullptr, 0) "atomicz", // tp_name
+			sizeof(PyAtomicz),							  // tp_basicsize
 			0,											  // tp_itemsize
 			nullptr,									  // tp_dealloc
 #if PY_VERSION_HEX < 0x03080000
@@ -429,30 +429,30 @@ namespace greenwaves
 			nullptr,			  // tp_getattr
 			nullptr,			  // tp_setattr
 			nullptr,			  // tp_compare / tp_reserved
-			PyBfloat16_Repr,	  // tp_repr
-			&PyBfloat16_AsNumber, // tp_as_number
+			PyAtomicz_Repr,	  // tp_repr
+			&PyAtomicz_AsNumber, // tp_as_number
 			nullptr,			  // tp_as_sequence
 			nullptr,			  // tp_as_mapping
-			PyBfloat16_Hash,	  // tp_hash
+			PyAtomicz_Hash,	  // tp_hash
 			nullptr,			  // tp_call
-			PyBfloat16_Str,		  // tp_str
+			PyAtomicz_Str,		  // tp_str
 			nullptr,			  // tp_getattro
 			nullptr,			  // tp_setattro
 #ifdef IMPLEMENT_BUFFER
-			&PyBfloat16_buffer_procs,			  // tp_as_buffer
+			&PyAtomicz_buffer_procs,			  // tp_as_buffer
 #else
 			nullptr,
 #endif
 								  // tp_flags
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
-			"bfloat16 floating-point values", // tp_doc
+			"atomicz floating-point values", // tp_doc
 			nullptr,						  // tp_traverse
 			nullptr,						  // tp_clear
-			PyBfloat16_RichCompare,			  // tp_richcompare
+			PyAtomicz_RichCompare,			  // tp_richcompare
 			0,								  // tp_weaklistoffset
 			nullptr,						  // tp_iter
 			nullptr,						  // tp_iternext
-			PyBfloat16_methods,						  // tp_methods
+			PyAtomicz_methods,						  // tp_methods
 			nullptr,						  // tp_members
 			nullptr,						  // tp_getset
 			nullptr,			  // tp_base
@@ -462,7 +462,7 @@ namespace greenwaves
 			0,								  // tp_dictoffset
 			nullptr,						  // tp_init
 			nullptr,						  // tp_alloc
-			PyBfloat16_New,					  // tp_new
+			PyAtomicz_New,					  // tp_new
 			nullptr,						  // tp_free
 			nullptr,						  // tp_is_gc
 			nullptr,						  // tp_bases
@@ -477,12 +477,12 @@ namespace greenwaves
 
 		// Numpy support
 
-		PyArray_ArrFuncs NPyBfloat16_ArrFuncs;
+		PyArray_ArrFuncs NPyAtomicz_ArrFuncs;
 
-		PyArray_Descr NPyBfloat16_Descr = {
+		PyArray_Descr NPyAtomicz_Descr = {
 			PyObject_HEAD_INIT(nullptr) //
 										/*typeobj=*/
-			(&bfloat16_type),
+			(&atomicz_type),
 			// We must register bfloat16 with a kind other than "f", because numpy
 			// considers two types with the same kind and size to be equal, but
 			// float16 != bfloat16.
@@ -500,7 +500,7 @@ namespace greenwaves
 			/*subarray=*/nullptr,
 			/*fields=*/nullptr,
 			/*names=*/nullptr,
-			/*f=*/&NPyBfloat16_ArrFuncs,
+			/*f=*/&NPyAtomicz_ArrFuncs,
 			/*metadata=*/nullptr,
 			/*c_metadata=*/nullptr,
 			/*hash=*/-1, // -1 means "not computed yet".
@@ -508,18 +508,18 @@ namespace greenwaves
 
 		// Implementations of NumPy array methods.
 
-		PyObject *NPyBfloat16_GetItem(void *data, void  *arr)
+		PyObject *NPyAtomicz_GetItem(void *data, void  *arr)
 		{
 
 			bfloat16 x;
-			NPyBfloat16_Descr.f->copyswap(&x, data, !PyArray_ISNOTSWAPPED(reinterpret_cast<PyArrayObject *>(arr)), NULL);
-			return PyBfloat16_FromBfloat16(x);
+			NPyAtomicz_Descr.f->copyswap(&x, data, !PyArray_ISNOTSWAPPED(reinterpret_cast<PyArrayObject *>(arr)), NULL);
+			return PyAtomicz_FromAtomicz(x);
 		}
 
-		int NPyBfloat16_SetItem(PyObject *item, void *data, void *arr)
+		int NPyAtomicz_SetItem(PyObject *item, void *data, void *arr)
 		{
 			bfloat16 x;
-			if (!CastToBfloat16(item, &x))
+			if (!CastToAtomicz(item, &x))
 			{
 				PyErr_Format(PyExc_TypeError, "expected number, got %s",
 							 item->ob_type->tp_name);
@@ -535,7 +535,7 @@ namespace greenwaves
 			std::swap(p[0], p[1]);
 		}
 
-		void NPyBfloat16_CopySwapN(void *dstv, npy_intp dstride, void *srcv,
+		void NPyAtomicz_CopySwapN(void *dstv, npy_intp dstride, void *srcv,
 								   npy_intp sstride, npy_intp n, int swap, void *arr)
 		{
 			char *dst = reinterpret_cast<char *>(dstv);
@@ -566,7 +566,7 @@ namespace greenwaves
 			}
 		}
 
-		void NPyBfloat16_CopySwap(void *dst, void *src, int swap, void *arr)
+		void NPyAtomicz_CopySwap(void *dst, void *src, int swap, void *arr)
 		{
 			if (!src)
 			{
@@ -579,14 +579,14 @@ namespace greenwaves
 			}
 		}
 
-		npy_bool NPyBfloat16_NonZero(void *data, void *arr)
+		npy_bool NPyAtomicz_NonZero(void *data, void *arr)
 		{
 			bfloat16 x;
 			memcpy(&x, data, sizeof(x));
 			return x != static_cast<bfloat16>(0);
 		}
 
-		int NPyBfloat16_Fill(void *buffer_raw, npy_intp length, void *ignored)
+		int NPyAtomicz_Fill(void *buffer_raw, npy_intp length, void *ignored)
 		{
 			bfloat16 *const buffer = reinterpret_cast<bfloat16 *>(buffer_raw);
 			const float start(buffer[0]);
@@ -598,7 +598,7 @@ namespace greenwaves
 			return 0;
 		}
 
-		void NPyBfloat16_DotFunc(void *ip1, npy_intp is1, void *ip2, npy_intp is2,
+		void NPyAtomicz_DotFunc(void *ip1, npy_intp is1, void *ip2, npy_intp is2,
 								 void *op, npy_intp n, void *arr)
 		{
 			char *c1 = reinterpret_cast<char *>(ip1);
@@ -616,10 +616,10 @@ namespace greenwaves
 			*out = static_cast<bfloat16>(acc);
 		}
 
-		int NPyBfloat16_CompareFunc(const void *v1, const void *v2, void *arr)
+		int NPyAtomicz_CompareFunc(const void *v1, const void *v2, void *arr)
 		{
 #ifdef DEBUG_CALLS
-			std::cout << "NPyBfloat16_CompareFunc\n";
+			std::cout << "NPyAtomicz_CompareFunc\n";
 #endif
 			bfloat16 b1 = *reinterpret_cast<const bfloat16 *>(v1);
 			bfloat16 b2 = *reinterpret_cast<const bfloat16 *>(v2);
@@ -642,7 +642,7 @@ namespace greenwaves
 			return 0;
 		}
 
-		int NPyBfloat16_ArgMaxFunc(void *data, npy_intp n, npy_intp *max_ind,
+		int NPyAtomicz_ArgMaxFunc(void *data, npy_intp n, npy_intp *max_ind,
 								   void *arr)
 		{
 			const bfloat16 *bdata = reinterpret_cast<const bfloat16 *>(data);
@@ -658,7 +658,7 @@ namespace greenwaves
 			return 0;
 		}
 
-		int NPyBfloat16_ArgMinFunc(void *data, npy_intp n, npy_intp *min_ind,
+		int NPyAtomicz_ArgMinFunc(void *data, npy_intp n, npy_intp *min_ind,
 								   void *arr)
 		{
 			const bfloat16 *bdata = reinterpret_cast<const bfloat16 *>(data);
@@ -686,7 +686,7 @@ namespace greenwaves
 		struct TypeDescriptor<bfloat16>
 		{
 			typedef bfloat16 T;
-			static int Dtype() { return npy_bfloat16; }
+			static int Dtype() { return npy_atomicz; }
 		};
 
 		template <>
@@ -830,17 +830,17 @@ namespace greenwaves
 		// type corresponding to 'T'. If 'cast_is_safe', registers that bfloat16 can be
 		// safely coerced to T.
 		template <typename T>
-		bool RegisterBfloat16Cast(int numpy_type, bool cast_is_safe)
+		bool RegisterAtomiczCast(int numpy_type, bool cast_is_safe)
 		{
-			if (PyArray_RegisterCastFunc(PyArray_DescrFromType(numpy_type), npy_bfloat16, NPyCast<T, bfloat16>) < 0)
+			if (PyArray_RegisterCastFunc(PyArray_DescrFromType(numpy_type), npy_atomicz, NPyCast<T, bfloat16>) < 0)
 			{
 				return false;
 			}
-			if (PyArray_RegisterCastFunc(&NPyBfloat16_Descr, numpy_type, NPyCast<bfloat16, T>) < 0)
+			if (PyArray_RegisterCastFunc(&NPyAtomicz_Descr, numpy_type, NPyCast<bfloat16, T>) < 0)
 			{
 				return false;
 			}
-			if (cast_is_safe && PyArray_RegisterCanCast(&NPyBfloat16_Descr, numpy_type, NPY_NOSCALAR) < 0)
+			if (cast_is_safe && PyArray_RegisterCanCast(&NPyAtomicz_Descr, numpy_type, NPY_NOSCALAR) < 0)
 			{
 				return false;
 			}
@@ -928,13 +928,13 @@ namespace greenwaves
 				}
 				if (fetestexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW)) {
 					if (fetestexcept(FE_INVALID)) {
-						PyErr_SetString(PyExc_ArithmeticError, "bfloat16 invalid");
+						PyErr_SetString(PyExc_ArithmeticError, "atomicz invalid");
 					} else if (fetestexcept(FE_DIVBYZERO)) {
-						PyErr_SetString(PyExc_ArithmeticError, "bfloat16 divide by zero");
+						PyErr_SetString(PyExc_ArithmeticError, "atomicz divide by zero");
 					} else if (fetestexcept(FE_OVERFLOW)) {
-						PyErr_SetString(PyExc_ArithmeticError, "bfloat16 overflow");
+						PyErr_SetString(PyExc_ArithmeticError, "atomicz overflow");
 					} else if (fetestexcept(FE_UNDERFLOW)) {
-						PyErr_SetString(PyExc_ArithmeticError, "bfloat16 underflow");
+						PyErr_SetString(PyExc_ArithmeticError, "atomicz underflow");
 					}
 				}
 				fesetenv(&fenv);
@@ -973,13 +973,13 @@ namespace greenwaves
 				}
 				if (fetestexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW)) {
 					if (fetestexcept(FE_INVALID)) {
-						PyErr_SetString(PyExc_ArithmeticError, "bfloat16 invalid");
+						PyErr_SetString(PyExc_ArithmeticError, "atomicz invalid");
 					} else if (fetestexcept(FE_DIVBYZERO)) {
-						PyErr_SetString(PyExc_ArithmeticError, "bfloat16 divide by zero");
+						PyErr_SetString(PyExc_ArithmeticError, "atomicz divide by zero");
 					} else if (fetestexcept(FE_OVERFLOW)) {
-						PyErr_SetString(PyExc_ArithmeticError, "bfloat16 overflow");
+						PyErr_SetString(PyExc_ArithmeticError, "atomicz overflow");
 					} else if (fetestexcept(FE_UNDERFLOW)) {
-						PyErr_SetString(PyExc_ArithmeticError, "bfloat16 underflow");
+						PyErr_SetString(PyExc_ArithmeticError, "atomicz underflow");
 					}
 				}
 				fesetenv(&fenv);
@@ -1032,7 +1032,7 @@ namespace greenwaves
 							 ufunc->nargs, types.size());
 				return false;
 			}
-			if (PyUFunc_RegisterLoopForType(ufunc, npy_bfloat16, fn,
+			if (PyUFunc_RegisterLoopForType(ufunc, npy_atomicz, fn,
 											const_cast<int *>(types.data()),
 											nullptr) < 0)
 			{
@@ -1126,7 +1126,7 @@ namespace greenwaves
 			{
 				static std::vector<int> Types()
 				{
-					return {npy_bfloat16, npy_bfloat16, npy_bfloat16, npy_bfloat16};
+					return {npy_atomicz, npy_atomicz, npy_atomicz, npy_atomicz};
 				}
 				static void Call(char **args, npy_intp *dimensions, npy_intp *steps,
 								 void *data)
@@ -1744,7 +1744,7 @@ namespace greenwaves
 		// writing is this one (distributed in TF and JAX).
 		// TODO(phawkins): distribute the bfloat16 extension as its own pip package,
 		// so we can unambiguously refer to a single canonical definition of bfloat16.
-		int typenum = PyArray_TypeNumFromName(const_cast<char *>("bfloat16"));
+		int typenum = PyArray_TypeNumFromName(const_cast<char *>("atomicz"));
 		if (typenum != NPY_NOTYPE)
 		{
 			PyArray_Descr *descr = PyArray_DescrFromType(typenum);
@@ -1753,38 +1753,38 @@ namespace greenwaves
 			// an older version of TF or JAX.
 			if (descr && descr->f && descr->f->argmax)
 			{
-				npy_bfloat16 = typenum;
-				bfloat16_type_ptr = descr->typeobj;
+				npy_atomicz = typenum;
+				atomicz_type_ptr = descr->typeobj;
 				return true;
 			}
 		}
 
-		bfloat16_type.tp_base = &PyGenericArrType_Type;
+		atomicz_type.tp_base = &PyGenericArrType_Type;
 
-		if (PyType_Ready(&bfloat16_type) < 0)
+		if (PyType_Ready(&atomicz_type) < 0)
 		{
 			PyErr_Print();
-	        PyErr_SetString(PyExc_SystemError, "could not initialize bfloat16");
+	        PyErr_SetString(PyExc_SystemError, "could not initialize atomicz");
 			return false;
 		}
 
 		// Initializes the NumPy descriptor.
-		PyArray_InitArrFuncs(&NPyBfloat16_ArrFuncs);
-		NPyBfloat16_ArrFuncs.getitem = NPyBfloat16_GetItem;
-		NPyBfloat16_ArrFuncs.setitem = NPyBfloat16_SetItem;
-		NPyBfloat16_ArrFuncs.copyswapn = NPyBfloat16_CopySwapN;
-		NPyBfloat16_ArrFuncs.copyswap = NPyBfloat16_CopySwap;
-		NPyBfloat16_ArrFuncs.nonzero = NPyBfloat16_NonZero;
-		NPyBfloat16_ArrFuncs.fill = NPyBfloat16_Fill;
-		NPyBfloat16_ArrFuncs.dotfunc = NPyBfloat16_DotFunc;
-		NPyBfloat16_ArrFuncs.compare = NPyBfloat16_CompareFunc;
-		NPyBfloat16_ArrFuncs.argmax = NPyBfloat16_ArgMaxFunc;
-		NPyBfloat16_ArrFuncs.argmin = NPyBfloat16_ArgMinFunc;
+		PyArray_InitArrFuncs(&NPyAtomicz_ArrFuncs);
+		NPyAtomicz_ArrFuncs.getitem = NPyAtomicz_GetItem;
+		NPyAtomicz_ArrFuncs.setitem = NPyAtomicz_SetItem;
+		NPyAtomicz_ArrFuncs.copyswapn = NPyAtomicz_CopySwapN;
+		NPyAtomicz_ArrFuncs.copyswap = NPyAtomicz_CopySwap;
+		NPyAtomicz_ArrFuncs.nonzero = NPyAtomicz_NonZero;
+		NPyAtomicz_ArrFuncs.fill = NPyAtomicz_Fill;
+		NPyAtomicz_ArrFuncs.dotfunc = NPyAtomicz_DotFunc;
+		NPyAtomicz_ArrFuncs.compare = NPyAtomicz_CompareFunc;
+		NPyAtomicz_ArrFuncs.argmax = NPyAtomicz_ArgMaxFunc;
+		NPyAtomicz_ArrFuncs.argmin = NPyAtomicz_ArgMinFunc;
 
-		Py_TYPE(&NPyBfloat16_Descr) = &PyArrayDescr_Type;
-		npy_bfloat16 = PyArray_RegisterDataType(&NPyBfloat16_Descr);
-		bfloat16_type_ptr = &bfloat16_type;
-		if (npy_bfloat16 < 0)
+		Py_TYPE(&NPyAtomicz_Descr) = &PyArrayDescr_Type;
+		npy_atomicz = PyArray_RegisterDataType(&NPyAtomicz_Descr);
+		atomicz_type_ptr = &atomicz_type;
+		if (npy_atomicz < 0)
 		{
 			return false;
 		}
@@ -1792,92 +1792,92 @@ namespace greenwaves
 		Safe_PyObjectPtr typeDict_obj = make_safe(PyObject_GetAttrString(numpy.get(), "sctypeDict"));
 		if (!typeDict_obj) return false;
 		// Add the type object to `numpy.typeDict`: that makes
-		// `numpy.dtype('bfloat16')` work.
-		if (PyDict_SetItemString(typeDict_obj.get(), "bfloat16", reinterpret_cast<PyObject*>(&bfloat16_type)) < 0) {
+		// `numpy.dtype('atomicz')` work.
+		if (PyDict_SetItemString(typeDict_obj.get(), "atomicz", reinterpret_cast<PyObject*>(&atomicz_type)) < 0) {
 			return false;
 		}
 
-		// Support dtype(bfloat16)
-		if (PyDict_SetItemString(bfloat16_type.tp_dict, "dtype",
-								 reinterpret_cast<PyObject *>(&NPyBfloat16_Descr)) <
+		// Support dtype(atomicz)
+		if (PyDict_SetItemString(atomicz_type.tp_dict, "dtype",
+								 reinterpret_cast<PyObject *>(&NPyAtomicz_Descr)) <
 			0)
 		{
 			return false;
 		}
 
 		// Register casts
-		if (!RegisterBfloat16Cast<Eigen::half>(NPY_HALF, /*cast_is_safe=*/false))
+		if (!RegisterAtomiczCast<Eigen::half>(NPY_HALF, /*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<float>(NPY_FLOAT, /*cast_is_safe=*/true))
+		if (!RegisterAtomiczCast<float>(NPY_FLOAT, /*cast_is_safe=*/true))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<double>(NPY_DOUBLE, /*cast_is_safe=*/true))
+		if (!RegisterAtomiczCast<double>(NPY_DOUBLE, /*cast_is_safe=*/true))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<bool>(NPY_BOOL, /*cast_is_safe=*/false))
+		if (!RegisterAtomiczCast<bool>(NPY_BOOL, /*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<uint8>(NPY_UINT8, /*cast_is_safe=*/false))
+		if (!RegisterAtomiczCast<uint8>(NPY_UINT8, /*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<uint16>(NPY_UINT16, /*cast_is_safe=*/false))
+		if (!RegisterAtomiczCast<uint16>(NPY_UINT16, /*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<unsigned int>(NPY_UINT, /*cast_is_safe=*/false))
+		if (!RegisterAtomiczCast<unsigned int>(NPY_UINT, /*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<unsigned long>(NPY_ULONG, // NOLINT
+		if (!RegisterAtomiczCast<unsigned long>(NPY_ULONG, // NOLINT
 												 /*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<unsigned long long>( // NOLINT
+		if (!RegisterAtomiczCast<unsigned long long>( // NOLINT
 				NPY_ULONGLONG, /*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<uint64>(NPY_UINT64, /*cast_is_safe=*/false))
+		if (!RegisterAtomiczCast<uint64>(NPY_UINT64, /*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<int8>(NPY_INT8, /*cast_is_safe=*/false))
+		if (!RegisterAtomiczCast<int8>(NPY_INT8, /*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<int16>(NPY_INT16, /*cast_is_safe=*/false))
+		if (!RegisterAtomiczCast<int16>(NPY_INT16, /*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<int>(NPY_INT, /*cast_is_safe=*/false))
+		if (!RegisterAtomiczCast<int>(NPY_INT, /*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<long>(NPY_LONG, // NOLINT
+		if (!RegisterAtomiczCast<long>(NPY_LONG, // NOLINT
 										/*cast_is_safe=*/false))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<long long>( // NOLINT
+		if (!RegisterAtomiczCast<long long>( // NOLINT
 				NPY_LONGLONG, /*cast_is_safe=*/false))
 		{
 			return false;
 		}
 		// Following the numpy convention. imag part is dropped when converting to
 		// float.
-		if (!RegisterBfloat16Cast<std::complex<float>>(NPY_COMPLEX64,
+		if (!RegisterAtomiczCast<std::complex<float>>(NPY_COMPLEX64,
 													   /*cast_is_safe=*/true))
 		{
 			return false;
 		}
-		if (!RegisterBfloat16Cast<std::complex<double>>(NPY_COMPLEX128, /*cast_is_safe=*/true))
+		if (!RegisterAtomiczCast<std::complex<double>>(NPY_COMPLEX128, /*cast_is_safe=*/true))
 		{
 			return false;
 		}
@@ -2063,9 +2063,9 @@ namespace greenwaves
 		return ok;
 	}
 
-	bool RegisterNumpyBfloat16()
+	bool RegisterNumpyAtomicz()
 	{
-		if (npy_bfloat16 != NPY_NOTYPE)
+		if (npy_atomicz != NPY_NOTYPE)
 		{
 			// Already initialized.
 			return true;
@@ -2074,7 +2074,7 @@ namespace greenwaves
 		{
 			if (!PyErr_Occurred())
 			{
-				PyErr_SetString(PyExc_RuntimeError, "cannot load bfloat16 module.");
+				PyErr_SetString(PyExc_RuntimeError, "cannot load atomicz module.");
 			}
 			PyErr_Print();
 			return false;
@@ -2082,23 +2082,23 @@ namespace greenwaves
 		return true;
 	}
 
-	PyObject *Bfloat16Dtype()
+	PyObject *AtomiczDtype()
 	{
-		return reinterpret_cast<PyObject *>(bfloat16_type_ptr);
+		return reinterpret_cast<PyObject *>(atomicz_type_ptr);
 	}
 
-	int Bfloat16NumpyType() { return npy_bfloat16; }
+	int AtomiczNumpyType() { return npy_atomicz; }
 
-	static PyMethodDef Bfloat16ModuleMethods[] = {
+	static PyMethodDef AtomiczModuleMethods[] = {
 		{NULL, NULL, 0, NULL}
 	};
 
-	static struct PyModuleDef Bfloat16Module = {
+	static struct PyModuleDef AtomiczModule = {
 		PyModuleDef_HEAD_INIT,
-		"numpy_bfloat16",
+		"numpy_atomicz",
 		NULL,
 		-1,
-		Bfloat16ModuleMethods,
+		AtomiczModuleMethods,
 		NULL,
 		NULL,
 		NULL,
@@ -2106,18 +2106,18 @@ namespace greenwaves
 	};
 
 	PyMODINIT_FUNC
-	PyInit_bfloat16ext(void)
+	PyInit_atomicz(void)
 	{
 		PyObject *m;
-		m = PyModule_Create(&Bfloat16Module);
+		m = PyModule_Create(&AtomiczModule);
 		if (m == NULL)
 			return NULL;
-		RegisterNumpyBfloat16();
-		Py_INCREF(&bfloat16_type);
-		Py_XINCREF(&NPyBfloat16_Descr);
-		if (PyModule_AddObject(m, "bfloat16", Bfloat16Dtype()) < 0)
+		RegisterNumpyAtomicz();
+		Py_INCREF(&atomicz_type);
+		Py_XINCREF(&NPyAtomicz_Descr);
+		if (PyModule_AddObject(m, "atomicz", AtomiczDtype()) < 0)
 		{
-			Py_DECREF(&bfloat16_type);
+			Py_DECREF(&atomicz_type);
 			Py_DECREF(m);
 			return NULL;
 		}

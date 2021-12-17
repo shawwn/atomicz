@@ -5,7 +5,7 @@ from distutils.command.build_ext import build_ext
 from distutils.core import Extension, setup
 from distutils.sysconfig import customize_compiler
 
-PACKAGE_NAME='bfloat16ext'
+PACKAGE_NAME='atomicz'
 
 import numpy as np
 
@@ -29,17 +29,17 @@ class my_build_ext(build_ext):
 
 
 module1 = Extension(PACKAGE_NAME,
-                    sources=['bfloat16.cc', 'numbers.cc'],
+                    sources=['atomicz.cc', 'numbers.cc'],
                     include_dirs=[np.get_include()],
                     extra_compile_args=['-std=c++14'])
 
 setup(name=PACKAGE_NAME,
-      version='1.1.9',
-      description='Numpy bfloat16 package',
+      version='0.1.0',
+      description='atomic operations on raw memory for python',
       license='Apache',
-      author='GreenWaves Technologies',
-      author_email='support@greenwaves-technologies.com',
-      url='https://github.com/shawwn/bfloat16ext',
+      author='Shawn Presser',
+      author_email='shawnpresser@gmail.com',
+      url='https://github.com/shawwn/atomicz',
       install_requires=[],
       ext_modules=[module1],
       cmdclass={'build_ext': my_build_ext})
