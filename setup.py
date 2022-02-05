@@ -6,7 +6,7 @@ from distutils.core import Extension, setup
 from distutils.sysconfig import customize_compiler
 
 PACKAGE_NAME='atomicz'
-__version__ = '0.2.2'
+__version__ = '0.3.0'
 
 if 'clean' in sys.argv:
     curdir = os.path.dirname(os.path.realpath(__file__))
