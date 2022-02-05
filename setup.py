@@ -6,6 +6,7 @@ from distutils.core import Extension, setup
 from distutils.sysconfig import customize_compiler
 
 PACKAGE_NAME='atomicz'
+__version__ = '0.2.2'
 
 if 'clean' in sys.argv:
     curdir = os.path.dirname(os.path.realpath(__file__))
@@ -32,7 +33,7 @@ module1 = Extension(PACKAGE_NAME,
                     extra_compile_args=['-std=c++14'])
 
 setup(name=PACKAGE_NAME,
-      version='0.2.2',
+      version=__version__,
       description='atomic operations on raw memory for python',
       license='Apache',
       author='Shawn Presser',
