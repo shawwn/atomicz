@@ -102,10 +102,10 @@ namespace greenwaves
 	void do_store(const void *source_p, void *sink_p, unsigned long long nbytes)
 	{
     switch(nbytes) {
-      case 1: return store<unsigned char>(sink_p, load<unsigned char>(source_p));
-      case 2: return store<unsigned short>(sink_p, load<unsigned short>(source_p));
-      case 4: return store<unsigned int>(sink_p, load<unsigned int>(source_p));
-      case 8: return store<unsigned long long>(sink_p, load<unsigned long long>(source_p));
+      case 1: return store<unsigned char>(sink_p, *reinterpret_cast<const unsigned char*>(source_p));
+      case 2: return store<unsigned short>(sink_p, *reinterpret_cast<const unsigned short*>(source_p));
+      case 4: return store<unsigned int>(sink_p, *reinterpret_cast<const unsigned int*>(source_p));
+      case 8: return store<unsigned long long>(sink_p, *reinterpret_cast<const unsigned long long*>(source_p));
       default:
         fprintf(stderr, "Can only exchange 1, 2, 4, or 8 bytes\n");
         return;
@@ -128,10 +128,10 @@ namespace greenwaves
 	unsigned long long do_exchange(const void *source_p, void *sink_p, unsigned long long nbytes)
 	{
     switch(nbytes) {
-      case 1: return exchange<unsigned char>(sink_p, load<unsigned char>(source_p));
-      case 2: return exchange<unsigned short>(sink_p, load<unsigned short>(source_p));
-      case 4: return exchange<unsigned int>(sink_p, load<unsigned int>(source_p));
-      case 8: return exchange<unsigned long long>(sink_p, load<unsigned long long>(source_p));
+      case 1: return exchange<unsigned char>(sink_p, *reinterpret_cast<const unsigned char*>(source_p));
+      case 2: return exchange<unsigned short>(sink_p, *reinterpret_cast<const unsigned short*>(source_p));
+      case 4: return exchange<unsigned int>(sink_p, *reinterpret_cast<const unsigned int*>(source_p));
+      case 8: return exchange<unsigned long long>(sink_p, *reinterpret_cast<const unsigned long long*>(source_p));
       default:
         fprintf(stderr, "Can only exchange 1, 2, 4, or 8 bytes\n");
         return 0;
@@ -141,10 +141,10 @@ namespace greenwaves
 	unsigned long long do_compare_exchange(const void *desired_p, void* expected_p, void *sink_p, unsigned long long nbytes)
 	{
     switch(nbytes) {
-      case 1: return compare_exchange<unsigned char>(sink_p, reinterpret_cast<unsigned char*>(expected_p), load<unsigned char>(desired_p));
-      case 2: return compare_exchange<unsigned short>(sink_p, reinterpret_cast<unsigned short*>(expected_p), load<unsigned short>(desired_p));
-      case 4: return compare_exchange<unsigned int>(sink_p, reinterpret_cast<unsigned int*>(expected_p), load<unsigned int>(desired_p));
-      case 8: return compare_exchange<unsigned long long>(sink_p, reinterpret_cast<unsigned long long*>(expected_p), load<unsigned long long>(desired_p));
+      case 1: return compare_exchange<unsigned char>(sink_p, reinterpret_cast<unsigned char*>(expected_p), *reinterpret_cast<const unsigned char*>(desired_p));
+      case 2: return compare_exchange<unsigned short>(sink_p, reinterpret_cast<unsigned short*>(expected_p), *reinterpret_cast<const unsigned short*>(desired_p));
+      case 4: return compare_exchange<unsigned int>(sink_p, reinterpret_cast<unsigned int*>(expected_p), *reinterpret_cast<const unsigned int*>(desired_p));
+      case 8: return compare_exchange<unsigned long long>(sink_p, reinterpret_cast<unsigned long long*>(expected_p), *reinterpret_cast<const unsigned long long*>(desired_p));
       default:
         fprintf(stderr, "Can only compare_exchange 1, 2, 4, or 8 bytes\n");
         return 0;
@@ -154,10 +154,10 @@ namespace greenwaves
 	unsigned long long do_fetch_add(const void *source_p, void *sink_p, unsigned long long nbytes)
 	{
     switch(nbytes) {
-      case 1: return fetch_add<unsigned char>(sink_p, load<unsigned char>(source_p));
-      case 2: return fetch_add<unsigned short>(sink_p, load<unsigned short>(source_p));
-      case 4: return fetch_add<unsigned int>(sink_p, load<unsigned int>(source_p));
-      case 8: return fetch_add<unsigned long long>(sink_p, load<unsigned long long>(source_p));
+      case 1: return fetch_add<unsigned char>(sink_p, *reinterpret_cast<const unsigned char*>(source_p));
+      case 2: return fetch_add<unsigned short>(sink_p, *reinterpret_cast<const unsigned short*>(source_p));
+      case 4: return fetch_add<unsigned int>(sink_p, *reinterpret_cast<const unsigned int*>(source_p));
+      case 8: return fetch_add<unsigned long long>(sink_p, *reinterpret_cast<const unsigned long long*>(source_p));
       default:
         fprintf(stderr, "Can only fetch_add 1, 2, 4, or 8 bytes\n");
         return 0;
@@ -167,10 +167,10 @@ namespace greenwaves
 	unsigned long long do_fetch_sub(const void *source_p, void *sink_p, unsigned long long nbytes)
 	{
     switch(nbytes) {
-      case 1: return fetch_sub<unsigned char>(sink_p, load<unsigned char>(source_p));
-      case 2: return fetch_sub<unsigned short>(sink_p, load<unsigned short>(source_p));
-      case 4: return fetch_sub<unsigned int>(sink_p, load<unsigned int>(source_p));
-      case 8: return fetch_sub<unsigned long long>(sink_p, load<unsigned long long>(source_p));
+      case 1: return fetch_sub<unsigned char>(sink_p, *reinterpret_cast<const unsigned char*>(source_p));
+      case 2: return fetch_sub<unsigned short>(sink_p, *reinterpret_cast<const unsigned short*>(source_p));
+      case 4: return fetch_sub<unsigned int>(sink_p, *reinterpret_cast<const unsigned int*>(source_p));
+      case 8: return fetch_sub<unsigned long long>(sink_p, *reinterpret_cast<const unsigned long long*>(source_p));
       default:
         fprintf(stderr, "Can only fetch_sub 1, 2, 4, or 8 bytes\n");
         return 0;
@@ -180,10 +180,10 @@ namespace greenwaves
 	unsigned long long do_fetch_or(const void *source_p, void *sink_p, unsigned long long nbytes)
 	{
     switch(nbytes) {
-      case 1: return fetch_or<unsigned char>(sink_p, load<unsigned char>(source_p));
-      case 2: return fetch_or<unsigned short>(sink_p, load<unsigned short>(source_p));
-      case 4: return fetch_or<unsigned int>(sink_p, load<unsigned int>(source_p));
-      case 8: return fetch_or<unsigned long long>(sink_p, load<unsigned long long>(source_p));
+      case 1: return fetch_or<unsigned char>(sink_p, *reinterpret_cast<const unsigned char*>(source_p));
+      case 2: return fetch_or<unsigned short>(sink_p, *reinterpret_cast<const unsigned short*>(source_p));
+      case 4: return fetch_or<unsigned int>(sink_p, *reinterpret_cast<const unsigned int*>(source_p));
+      case 8: return fetch_or<unsigned long long>(sink_p, *reinterpret_cast<const unsigned long long*>(source_p));
       default:
         fprintf(stderr, "Can only fetch_or 1, 2, 4, or 8 bytes\n");
         return 0;
@@ -193,10 +193,10 @@ namespace greenwaves
 	unsigned long long do_fetch_xor(const void *source_p, void *sink_p, unsigned long long nbytes)
 	{
     switch(nbytes) {
-      case 1: return fetch_xor<unsigned char>(sink_p, load<unsigned char>(source_p));
-      case 2: return fetch_xor<unsigned short>(sink_p, load<unsigned short>(source_p));
-      case 4: return fetch_xor<unsigned int>(sink_p, load<unsigned int>(source_p));
-      case 8: return fetch_xor<unsigned long long>(sink_p, load<unsigned long long>(source_p));
+      case 1: return fetch_xor<unsigned char>(sink_p, *reinterpret_cast<const unsigned char*>(source_p));
+      case 2: return fetch_xor<unsigned short>(sink_p, *reinterpret_cast<const unsigned short*>(source_p));
+      case 4: return fetch_xor<unsigned int>(sink_p, *reinterpret_cast<const unsigned int*>(source_p));
+      case 8: return fetch_xor<unsigned long long>(sink_p, *reinterpret_cast<const unsigned long long*>(source_p));
       default:
         fprintf(stderr, "Can only fetch_xor 1, 2, 4, or 8 bytes\n");
         return 0;
@@ -206,10 +206,10 @@ namespace greenwaves
 	unsigned long long do_fetch_and(const void *source_p, void *sink_p, unsigned long long nbytes)
 	{
     switch(nbytes) {
-      case 1: return fetch_and<unsigned char>(sink_p, load<unsigned char>(source_p));
-      case 2: return fetch_and<unsigned short>(sink_p, load<unsigned short>(source_p));
-      case 4: return fetch_and<unsigned int>(sink_p, load<unsigned int>(source_p));
-      case 8: return fetch_and<unsigned long long>(sink_p, load<unsigned long long>(source_p));
+      case 1: return fetch_and<unsigned char>(sink_p, *reinterpret_cast<const unsigned char*>(source_p));
+      case 2: return fetch_and<unsigned short>(sink_p, *reinterpret_cast<const unsigned short*>(source_p));
+      case 4: return fetch_and<unsigned int>(sink_p, *reinterpret_cast<const unsigned int*>(source_p));
+      case 8: return fetch_and<unsigned long long>(sink_p, *reinterpret_cast<const unsigned long long*>(source_p));
       default:
         fprintf(stderr, "Can only fetch_and 1, 2, 4, or 8 bytes\n");
         return 0;
